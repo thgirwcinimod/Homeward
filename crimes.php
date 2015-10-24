@@ -1,48 +1,51 @@
 <?php
-	$police_decode =	json_decode(file_get_contents("https://data.police.uk/api/crimes-at-location?date=2012-02&lat=52.629729&lng=-1.131592"));
+function crime_rate($lat, $lng)
+		$police_decode =	json_decode(file_get_contents("https://data.police.uk/api/crimes-at-location?date=2012-02&lat=52.629729&lng=-1.131592"));
 	
 		$count_crimes = count($police_decode);
-	
+		$value = 0;
 		for ($i = 0; $i < $count_crimes; $i++) {
 			
-			echo $police_decode[$i]->category . "<br>";
-			echo iterate($police_decode);
-			
+			$value = $value + iterate_crime_rate($police_decode[$i]->category);
+			echo $police_decode[$i]->category . " ";
+			echo $value . "<br>";
 		}
+ 		return $value;
+}
 	
-	function iterate($police_decode) {
-		$value = 0;
-			if ($police_decode["catergory"]["url"]==="possession-of-weapons")
-				$value = $value + 0.9;
-			elseif ($police_decode["catergory"]["url"]==="violent-crime")
-				$value = $value  + 0.9;
-			elseif($police_decode["catergory"]["url"]==="theft-from-the-person")
-				$value = $value  + 0.7;
-			elseif($police_decode["catergory"]["url"]==="robbery")
-				$value = $value  + 0.6;
-			elseif($police_decode["catergory"]["url"]==="anti-social-behaviour ")
-				$value = $value  + 0.5;
-			elseif($police_decode["catergory"]["url"]==="public-order ")
-				$value = $value  + 0.4;
-			elseif($police_decode["catergory"]["url"]==="vehicle-crime")
-				$value = $value  + 0.4;
-			elseif($police_decode["catergory"]["url"]==="burglary")
-				$value = $value  + 0.3;
-			elseif($police_decode["catergory"]["url"]==="criminal-damage-arson")
-				$value = $value  + 0.2;
-			elseif($police_decode["catergory"]["url"]==="drugs")
-				$value = $value  + 0.2;
-			elseif($police_decode["catergory"]["url"]==="bicycle-theft ")
-				$value = $value  + 0.2;
-			elseif($police_decode["catergory"]["url"]==="other-theft")
-				$value = $value  + 0.1;
-			elseif($police_decode["catergory"]["url"]==="shoplifting")
-				$value = $value  + 0.1;
-			elseif($police_decode["catergory"]["url"]==="other-crime")
-				$value = $value  + 0.1;
-				
-			return $value;
+	function iterate_crime_rate($police_decode)
+	{
+		if ($police_decode === "possession-of-weapons") {
+			$value = 9;
+		} elseif ($police_decode === "violent-crime") {
+			$value = 9;
+		} elseif ($police_decode === "theft-from-the-person") {
+			$value = 7;
+		} elseif ($police_decode === "robbery") {
+			$value = 6;
+		} elseif ($police_decode === "anti-social-behaviour") {
+			$value = 5;
+		} elseif ($police_decode === "public-order ") {
+			$value = 4;
+		} elseif ($police_decode === "vehicle-crime") {
+			$value = 4;
+		} elseif ($police_decode === "burglary") {
+			$value = 3;
+		} elseif ($police_decode === "criminal-damage-arson") {
+			$value = 2;
+		} elseif ($police_decode === "drugs") {
+			$value = 2;
+		} elseif ($police_decode === "bicycle-theft ") {
+			$value = 2;
+		} elseif ($police_decode === "other-theft") {
+			$value = 1;
+		} elseif ($police_decode === "shoplifting") {
+			$value = 1;
+		} elseif($police_decode === "other-crime") {
+			$value = 1;
+		}
 
+			return $value;
 	}
 
 	function details($police_decode) {
