@@ -1,5 +1,7 @@
 <?php
 
+
+
     function returnMaps($origin, $dest) {
 		$origin = str_replace(" ","+",$origin);
 		$dest = str_replace(" ","+",$dest);
@@ -77,13 +79,12 @@
 		$route_rates = array();
 		for ($i = 0; $i < $count_routes; $i++) {
 			$count_points = count($routes[$i]);
+			$poly = "";
 			for ($r = 0; $r < $count_points; $r++) {
-				$lat = $routes[$i][$r][0];
-				$lng = $routes[$i][$r][1];
-
-				$rate = crime_rate($lat, $lng);
-				$rates = $rates + $rate;
+				$poly = $poly . $routes[$i][$r][0] .",". $routes[$i][$r][1] . ":";
 			}
+			$rate = crime_rate($poly);
+			$rates = $rates + $rate;
 			array_push($route_rates, $rates);
 		}
 		$crime_rate_compare = 100000000;
@@ -99,8 +100,8 @@
 
 		var_dump($json['routes'][$TheLowestCrimeRateArray]);
 	}
-	function crime_rate($lat, $lng) {
-		$police_decode =	json_decode(file_get_contents("https://data.police.uk/api/crimes-at-location?date=2012-02&lat=" . $lat . "&lng=" . $lng));
+	function crime_rate($poly) {
+		$police_decode =	json_decode(file_get_contents("https://data.police.uk/api/crimes-street/all-crime?poly=" . $poly . "&date=2015-08"));
 
 		$count_crimes = count($police_decode);
 		$value = 0;
@@ -121,11 +122,11 @@
 		} elseif ($police_decode === "violent-crime") {
 			$value = 9;
 		} elseif ($police_decode === "theft-from-the-person") {
-			$value = 7;
+			$value = 8;
 		} elseif ($police_decode === "robbery") {
-			$value = 6;
+			$value = 8;
 		} elseif ($police_decode === "anti-social-behaviour") {
-			$value = 5;
+			$value = 7;
 		} elseif ($police_decode === "public-order ") {
 			$value = 4;
 		} elseif ($police_decode === "vehicle-crime") {
@@ -135,7 +136,7 @@
 		} elseif ($police_decode === "criminal-damage-arson") {
 			$value = 2;
 		} elseif ($police_decode === "drugs") {
-			$value = 2;
+			$value = 1;
 		} elseif ($police_decode === "bicycle-theft ") {
 			$value = 2;
 		} elseif ($police_decode === "other-theft") {
